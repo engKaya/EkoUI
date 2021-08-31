@@ -1,0 +1,32 @@
+<div class="modal fade" #inspectModal tabindex="-1" role="dialog" aria-labelledby="inspectModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header row d-flex justify-content-between">
+        <div class="col-9">
+          <h5 class="modal-title">Fotoğraf Analiz Sonuçları</h5>
+        </div>
+        <div class="col-3">
+          <button type="button" (click)="closeInspectModal()" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped table-light">
+          <thead class="thead-light">
+            <tr>
+              <th class="text-center" scope="col">Fotoğraf Etiketi</th>
+              <th class="text-center" scope="col">Doğruluk Yüzdesi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let result of results">
+              <td class="text-left">{{ result.description }}</td>
+              <td class="text-left">%{{ result.score*100 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

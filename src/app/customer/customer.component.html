@@ -1,0 +1,10 @@
+<div class="customer-app">
+  <app-find
+    (findEvent)="onFormEvent($event)"
+    (addEvent)="onAddEvent($event)"
+  ></app-find>
+  <app-show-delete
+    [addEvent]="addEvent.asObservable()"
+    [findEvent]="findEvent.asObservable()"
+  ></app-show-delete>
+</div>

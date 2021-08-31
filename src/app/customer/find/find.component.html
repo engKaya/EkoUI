@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-between align-items-center px-0 my-5 row">
+  <div class="col-lg-8 col-md-12 col-sm-12 justify-content-start my-2 ">
+    <form #myform="ngForm" (ngSubmit)="onSubmit(myform)" class="form-inline justify-content-around d-flex">
+      <input type="text" class="form-control" name="MusteriIsim" placeholder="İsim" ngModel/>
+      <input type="text" class="form-control" name="MusteriSoyIsim" placeholder="Soyisim" ngModel/>
+      <input #musteriTelFind type="tel" class="form-control" pattern="0[0-9]{3}-[0-9]{3}-[0-9]{4}" name="MusteriTel"
+      maxlength="14" placeholder="Telefon" ngModel (keypress)="onPhoneChange(this.musteriTelFind.value, this.musteriTelFind)"/>
+      <button class="btn btn-outline-primary" type="submit">Ara</button>
+    </form>
+  </div>
+  <div class="col-lg-2 col-md-12 justify-content-start d-flex">
+    <button class="btn col-12 btn-outline-primary col-sm-12 btn-lg" data-toggle="modal" (click)="openModal()" data-target="#popupAdd">Ekle</button>
+  </div>
+</div>
+
+<div class="modal fade" #popupAdd tabindex="-1" role="dialog" aria-labelledby="popupAdd" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header row d-flex justify-content-between">
+        <div class="col-9"><h5 class="modal-title" id="exampleModalLongTitle">Müşteri Şikayeti Ekle</h5></div>
+        <div class="col-3"><button type="button" class="close" (click)="closeModal()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addForm_" (ngSubmit)="onSubmitAdd()">
+          <div class="col-md-6 my-1 col-sm-12 form-group">
+           <label class="text-black">Müşteri İsim</label>
+           <input
+            formControlName="MusteriIsim"
+            [ngClass]="f.MusteriIsim.invalid ? (f.MusteriIsim.touched ? 'form-control is-invalid':'form-control') : 'form-control is-valid'"
+            placeholder="İsim"/>
+          </div>
+          <div class="col-md-6 my-1 col-sm-12 form-group">
+            <label class="text-black" for="MusteriSoyIsim">Müşteri Soyisim</label>
+            <input
+            formControlName="MusteriSoyIsim"
+            [ngClass]="f.MusteriSoyIsim.invalid ? (f.MusteriSoyIsim.touched ? 'form-control is-invalid':'form-control') : 'form-control is-valid'"
+            placeholder="Soyisim"/>
+          </div>
+          <div class="col-md-6 my-1 col-sm-12 form-group">
+            <label class="text-black" for="MusteriTel">Müşteri Telefon</label>
+            <input
+            formControlName="MusteriTel"
+            #MusteriTel
+            maxlength="14"
+            [ngClass]="f.MusteriTel.invalid ? (f.MusteriTel.touched ? 'form-control is-invalid':'form-control') : 'form-control is-valid'"
+            placeholder="Telefon"
+            (keypress)="onPhoneChange(this.MusteriTel.value, this.MusteriTel)" />
+          </div>
+          <div class="col-md-6 my-1 col-sm-12 form-group">
+            <label class="text-black" for="MusteriMail">E-mail</label>
+            <input
+            formControlName="MusteriMail"
+            [ngClass]="f.MusteriMail.invalid ? (f.MusteriMail.touched ? 'form-control is-invalid':'form-control') : 'form-control is-valid'"
+            placeholder="Email" />
+          </div>
+          <div class="col-md-6 my-1 col-sm-12 form-group">
+            <label class="text-black" for="MusteriSehir">Müşteri Şehir</label>
+            <select
+              #sehirSelect
+              (change)="onChangeSehir(this.sehirSelect.value)"
+              [ngClass]="f.MusteriSehir.invalid ? (f.MusteriSehir.touched ? 'form-control is-invalid':'form-control') : 'form-control is-valid'"
+              formControlName="MusteriSehir"
+            >
+              <option *ngFor="let city of Cities" [value]="city.SehirId">{{city.SehirAdi}}</option>
+            </select>
+          </div>
+          <div class="col-md-6 my-1 col-sm-12 form-group">
+            <label class="text-black" for="MusteriIlce">Müşteri İlçe</label>
+            <select
+              [ngClass]="f.MusteriIlce.invalid ? (f.MusteriIlce.touched ? 'form-control is-invalid':'form-control') : 'form-control is-valid'"
+              formControlName="MusteriIlce"
+            >
+              <option *ngFor="let town of Towns" [value]="town.IlceIsim">{{town.IlceIsim}}</option>
+            </select>
+          </div>
+          <div class="col-md-12 my-1 col-sm-12 form-group">
+            <label class="text-black" for="MusteriAdres">Müşteri Adresi</label>
+            <textarea
+            formControlName="MusteriAdres"
+            [ngClass]="f.MusteriAdres.invalid ? (f.MusteriAdres.touched ? 'form-control is-invalid':'form-control') : 'form-control is-valid'"
+            rows="2"></textarea>
+          </div>
+          <div class="col-md-12 col-sm-12 my-1 form-group">
+            <label class="text-black" for="MusteriSikayet">Müşteri Şikayeti</label>
+            <textarea formControlName="MusteriSikayet"
+            [ngClass]="f.MusteriSikayet.invalid ? (f.MusteriSikayet.touched ? 'form-control is-invalid':'form-control') : 'form-control is-valid'"
+            rows="2"></textarea>
+          </div>
+          <div class="row d-flex justify-content-between col-md-12">
+            <button type="submit" class="btn btn-outline-primary col-md-4 mt-2">Ekle</button>
+          </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,229 @@
+<table class="table table-striped table-light">
+  <thead class="thead-light">
+    <tr>
+      <th class="text-center" scope="col">Araç Marka</th>
+      <th class="text-center" scope="col">Araç Model</th>
+      <th class="text-center" scope="col">Araç Motor</th>
+      <th class="text-center" scope="col">Araç Yıl</th>
+      <th class="text-center" scope="col">Araç Resim</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of Cars">
+      <td class="text-center">{{ data.MarkaAd }}</td>
+      <td class="text-center">{{ data.Model }}</td>
+      <td class="text-center">{{ data.Motor }}</td>
+      <td class="text-center">{{ data.Yil }}</td>
+      <td class="text-center">
+        <div class="justify-content-center align-items-center d-flex" style="width: 75px; height: 50px">
+          <img
+            *ngIf="data.ResimUrl.indexOf('lh3')>-1"
+            class="rounded mx-auto"
+            style="width: 100%; height: 100%"
+            src="{{ data.ResimUrl }}"
+          />
+          <div *ngIf="data.ResimUrl.indexOf('lh3')==-1" class="spinner-border mt-3 text-primary" role="status">
+            <span *ngIf="data.ResimUrl.indexOf('lh3')==-1" class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </td>
+      <td colspan="2" class="text-center">
+        <div class="justify-content-around flex-direction-row">
+          <div class="row d-flex justify-content-around align-items-center">
+            <button (click)="deleteCar(data)" class="btn col-md-5 col-sm-5 mt-3 col-sm-5 my-1 btn-danger">
+              Sil
+            </button>
+            <button
+              (click)="InspectImage(data)"
+              class="btn btn-secondary col-md-6 mt-3 my-1 col-sm-6">
+              İncele
+            </button>
+          </div>
+          <div class="row justify-content-center align-items-center">
+            <button
+              (click)="editCar(data)"
+              class="btn btn-primary col-md-8 mt-3 my-1 col-sm-8">
+              Ayrıntılar
+            </button>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="6" class="text-center">
+        <button (click)="addCar(false)" class="btn btn-success mx-auto">
+          Ekle
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div
+  class="modal"
+  #popupAddCar
+  id="popupAddCar"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="popupAddCar"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header row justify-content-between">
+        <div class="col-9">
+          <h5 class="modal-title" id="popupAddCar">Araç Ekle</h5>
+        </div>
+        <div class="col-3">
+          <button
+            type="button"
+            class="close"
+            (click)="closeAddCarModal()"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <form [formGroup]="addCarForm" (ngSubmit)="onSubmitSaveCar()">
+              <div class="col-md-6 my-1 col-sm-12 form-group">
+                <label class="text-black" for="Marka">Marka*</label>
+                <select
+                  [ngClass]="
+                    fCarAdd.MarkaId.invalid
+                      ? fCarAdd.MarkaId.touched
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                      : 'form-control is-valid'
+                  "
+                  formControlName="MarkaId"
+                >
+                  <option *ngFor="let brand of CarBrands" [value]="brand.MarkaId">{{ brand.MarkaAd }}</option>
+                </select>
+              </div>
+              <div class="col-md-6 col-sm-12 my-1 form-group">
+                <label class="text-black">Araç Model*</label>
+                <input
+                  formControlName="Model"
+                  [ngClass]="
+                    fCarAdd.Model.invalid
+                      ? fCarAdd.Model.touched
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                      : 'form-control is-valid'
+                  "
+                  placeholder="Araç Model"
+                />
+              </div>
+              <div class="col-md-6 col-sm-12 my-1 form-group">
+                <label class="text-black">Araç Yıl*</label>
+                <input
+                  formControlName="Yil"
+                  [ngClass]="
+                    fCarAdd.Yil.invalid
+                      ? fCarAdd.Yil.touched
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                      : 'form-control is-valid'
+                  "
+                  placeholder="Araç Yıl"
+                />
+              </div>
+              <div class="col-md-6 col-sm-12 my-1 form-group">
+                <label class="text-black">Araç Motor*</label>
+                <input
+                  formControlName="Motor"
+                  [ngClass]="
+                    fCarAdd.Motor.invalid
+                      ? fCarAdd.Motor.touched
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                      : 'form-control is-valid'
+                  "
+                  placeholder="Araç Motor"
+                />
+              </div>
+              <div class="col-md-6 col-sm-12 my-1 form-group">
+                <label class="form-label" for="customFile">{{isEditing ? 'Araç Resmi':'Araç Resmi*'}}</label>
+                <input
+                  [required]="!isEditing"
+                  (change)="getArrayBuffer($event)"
+                  formControlName="Image"
+                  type="file"
+                />
+              </div>
+
+              <div class="d-flex justify-content-center col-sm-12">
+                <button type="submit" class="btn btn-outline-primary col-md-4 mt-2">
+                  <span *ngIf="uploading == true" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  {{uploading ? 'Yükleniyor':'Kaydet'}}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #checkPopup class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ checkPopupHeaderString }}</h5>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 12px; font-weight: bold">
+          {{ checkPopupBodyString }} Emin misiniz?
+        </p>
+      </div>
+      <div class="d-flex justify-content-center modal-footer">
+        <button
+          type="button"
+          (click)="checkPopUpYes()"
+          class="btn btn-lg btn-outline-danger"
+        >
+          Evet
+        </button>
+        <button
+          type="button"
+          (click)="closeCheckPopup()"
+          class="btn btn-lg btn-outline-secondary"
+          data-dismiss="modal"
+        >
+          Hayır
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" #wrongImageModal tabindex="-1" role="dialog" aria-labelledby="wrongImageModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header row d-flex justify-content-between">
+        <div class="col-9">
+          <h5 class="modal-title" id="wrongImageModal">Resim Hatası</h5>
+        </div>
+        <div class="col-3">
+          <button type="button" (click)="closeWarningModal()" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <strong>Forma girilen resim bir arabaya ait olmalı.</strong>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeWarningModal()" type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-analyze [analyzeEvent]="analyzeEvent.asObservable()"></app-analyze>
